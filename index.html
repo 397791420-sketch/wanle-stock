@@ -185,7 +185,7 @@ input{font:inherit}
 <footer class="footer">
   数据来源：万乐冰洗厨库存价格表.xlsx（2026年8月）<br>数据更新于 2026-08-12<br>
   尺寸 / 实拍图片待补充 · 价格为参考价，实际成交以报价为准<br>
-  <span id="ageNote" style="display:none">库龄依据 T+ 出入库流水 FIFO 计算；流水数据截止 2025-02-19（之后新入库按老库存估算）<br></span>
+  <span id="ageNote" style="display:none">库龄依据 T+ 出入库流水 FIFO 计算；流水数据截止 2026-08-13（之后新入库按老库存估算）<br></span>
   <span id="switchPub" style="display:none"><a href="万乐冰洗厨库存价格_公开版.html?v=20260803c">切换公开版（发给客户）</a></span><br>
   公开版不含内部底价与库龄，可分享给客户查看
 </footer>
@@ -418,8 +418,8 @@ document.getElementById('search').addEventListener('input', e=>{
   if(AGE_ENABLED){
     const agePills=document.getElementById('agePills');
     if(agePills) agePills.style.display='';
-    const aUpd='2026-08-03 16:59:14';
-    const aCut='2025-02-19';
+    const aUpd='2026-08-13 12:36:35';
+    const aCut='2026-08-13';
     const elA=document.getElementById('statAge');
     if(elA){ elA.style.display=''; elA.textContent='库龄 '+(aUpd||'待更新'); }
     const elN=document.getElementById('ageNote');
