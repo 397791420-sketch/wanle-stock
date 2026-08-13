@@ -113,6 +113,7 @@ input{font:inherit}
 .badge-age.r{background:var(--red)}
 .age-line{font-size:11px;color:#a05a1c;margin-top:4px;line-height:1.4}
 .list-card .age-line{margin-top:2px;font-size:10px}
+.age-line.age-dist{color:#c0854a;font-size:10px;margin-top:2px}
 #agePills button.active{background:var(--gold)}
 #ageSort.on{color:var(--gold);border-color:#ecd9b0;background:#fdf6e9}
 
@@ -221,10 +222,21 @@ function ageBadgeHTML(p){
   return '<span class="badge-age '+ai.cls+'">'+ai.label+'</span>';
 }
 function ageLineHTML(p){
+  const a = p && p.age;
+  if(!a || !(a.qty>0)) return '';
   const ai = ageInfo(p);
-  if(!ai || ai.days<=0) return '';
-  const unc = ai.unc ? '（部分按期初估算）' : '';
-  return '<div class="age-line">🕐 库龄最长 '+ai.days+' 天'+(ai.earliest ? ' · 最早入库 '+ai.earliest : '')+unc+'</div>';
+  const b = a.buckets||{};
+  const groups=[];
+  if(b.gt365>0) groups.push('一年以上 '+fmt(b.gt365)+'台');
+  if(b.m181_365>0) groups.push('6-12月 '+fmt(b.m181_365)+'台');
+  if(b.m91_180>0) groups.push('3-6月 '+fmt(b.m91_180)+'台');
+  if(b.m61_90>0) groups.push('2-3月 '+fmt(b.m61_90)+'台');
+  if(b.m31_60>0) groups.push('1-2月 '+fmt(b.m31_60)+'台');
+  if(b.le30>0) groups.push('1月内 '+fmt(b.le30)+'台');
+  const unc = ai.unc ? '（含期初估算）' : '';
+  let h = '<div class="age-line">🕐 现存 '+fmt(a.qty)+' 台 · 最老 '+(ai.days||0)+' 天'+(ai.earliest?'（'+ai.earliest+' 入库）':'')+unc+'</div>';
+  if(groups.length) h += '<div class="age-line age-dist">'+groups.join(' · ')+'</div>';
+  return h;
 }
 
 function filtered(){
