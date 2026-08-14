@@ -157,7 +157,14 @@ input{font:inherit}
     <button data-brand="统帅" class="b-brand-统帅">统帅</button>
     <button id="onlyStock" class="tiny-toggle">仅看有货</button>
   </div>
-  <div class="pills" id="agePills" style="display:none">
+    <div class="pills" id="widthPills">
+    <button data-width="all" class="active">全部宽度</button>
+    <button data-width="w50_60">宽50-60cm</button>
+    <button data-width="w60_80">宽60-80cm</button>
+    <button data-width="w80_90">宽80-90cm</button>
+    <button data-width="w90p">宽90cm以上</button>
+  </div>
+<div class="pills" id="agePills" style="display:none">
     <button data-age="all" class="active">全部库龄</button>
     <button data-age="jyd">积压 ≥90天</button>
     <button data-age="zx">滞销 ≥180天</button>
@@ -202,7 +209,7 @@ const ICONS = {
   , '空调': '<svg viewBox="0 0 48 48" fill="none"><rect x="8" y="16" width="32" height="18" rx="3" stroke="currentColor" stroke-width="2.5"/><line x1="14" y1="25" x2="34" y2="25" stroke="currentColor" stroke-width="2.5"/><line x1="16" y1="29" x2="32" y2="29" stroke="currentColor" stroke-width="2"/><path d="M24 6v6M18 9l6 3 6-3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>'
 };
 
-const state = { cat:'all', brand:'all', mode:'wholesale', dip:false, q:'', stockOnly:false, view:'list', age:'all', ageSort:false };
+const state = { cat:'all', brand:'all', width:'all', mode:'wholesale', dip:false, q:'', stockOnly:false, view:'list', age:'all', ageSort:false };
 
 function num(n){ return (typeof n === 'number' && isFinite(n)) ? n : null; }
 function fmt(n){ return n == null ? '' : Math.round(n).toLocaleString('zh-CN'); }
@@ -239,11 +246,26 @@ function ageLineHTML(p){
   return h;
 }
 
+function prodWidth(p){
+  const sz = p && p.size;
+  if(!sz) return null;
+  const m = String(sz).match(/(\d+(?:\.\d+)?)/);
+  return m ? parseFloat(m[1]) : null;
+}
+
 function filtered(){
   const q = state.q.trim().toLowerCase();
   const list = PRODUCTS.filter(p=>{
     if(state.cat!=='all' && p.cat!==state.cat) return false;
     if(state.brand!=='all' && p.brand!==state.brand) return false;
+    if(state.width!=='all'){
+      const w = prodWidth(p);
+      if(w==null) return false;
+      if(state.width==='w50_60' && !(w>=500 && w<600)) return false;
+      if(state.width==='w60_80' && !(w>=600 && w<800)) return false;
+      if(state.width==='w80_90' && !(w>=800 && w<900)) return false;
+      if(state.width==='w90p' && !(w>=900)) return false;
+    }
     if(state.stockOnly && !(p.stock.total>0)) return false;
     if(state.age!=='all'){
       const ai = ageInfo(p);
@@ -375,6 +397,7 @@ function render(){
 function refreshUI(){
   document.querySelectorAll('#catPills button').forEach(b=>b.classList.toggle('active', b.dataset.cat===state.cat));
   document.querySelectorAll('#brandPills [data-brand]').forEach(b=>b.classList.toggle('active', b.dataset.brand===state.brand));
+  document.querySelectorAll('#widthPills button').forEach(b=>b.classList.toggle('active', b.dataset.width===state.width));
   document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.mode===state.mode));
   document.getElementById('onlyStock').classList.toggle('on', state.stockOnly);
   document.querySelectorAll('#agePills [data-age]').forEach(b=>b.classList.toggle('active', b.dataset.age===state.age));
@@ -390,6 +413,10 @@ document.getElementById('catPills').addEventListener('click', e=>{
 document.getElementById('brandPills').addEventListener('click', e=>{
   const b=e.target.closest('button[data-brand]'); if(!b) return;
   state.brand=b.dataset.brand; refreshUI();
+});
+document.getElementById('widthPills').addEventListener('click', e=>{
+  const b=e.target.closest('button[data-width]'); if(!b) return;
+  state.width=b.dataset.width; refreshUI();
 });
 document.getElementById('onlyStock').addEventListener('click', ()=>{ state.stockOnly=!state.stockOnly; refreshUI(); });
 document.getElementById('agePills').addEventListener('click', e=>{
