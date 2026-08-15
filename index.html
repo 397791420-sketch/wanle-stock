@@ -133,7 +133,9 @@ input{font:inherit}
 .feat-card .fc-img img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 .feat-card .fc-img .media-ph svg{width:34px;height:34px}
 .feat-card .fc-bd{padding:4px 6px 6px}
-.feat-card .fc-model{font-size:9.5px;font-weight:700;color:#1c2733;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.feat-card .fc-model{display:flex;align-items:center;gap:3px;font-size:9.5px}
+.feat-card .fc-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;color:#1c2733}
+.badge-fcat{display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#1d9a5e;padding:2px 7px;border-radius:5px;margin-left:6px;letter-spacing:.5px;flex:none}
 .feat-card .fc-price{font-size:11px;font-weight:800;color:#c0392b;margin-top:2px}
 .feat-card .fc-tag{font-size:8.5px;font-weight:700;color:#b98d3e;margin-left:3px}
 .promo-line{font-size:12px;font-weight:800;color:#b98d3e;margin-top:3px}
@@ -404,7 +406,7 @@ function cardHTML(p){
     +'<span class="stock-ribbon'+stockCls+'">'+stockRib+'</span>'
     +'</div>'
     +'<div class="card-body">'
-    +'<div class="model">'+p.model+ageBadgeHTML(p)+(p.feat?'<span class="badge-feat">主推</span>':'')+'</div>'
+    +'<div class="model">'+p.model+ageBadgeHTML(p)+(p.feat?'<span class="badge-feat">主推</span>':'')+(p.fcat?'<span class="badge-fcat">'+p.fcat+'</span>':'')+'</div>'
     +'<div class="sub">'+prName+' ｜ '+(total>0 ? ('海尔仓 '+fmt(st.haier)+' · 云仓 '+fmt(st.yun)) : '暂时无货')+'</div>'
     +ageLineHTML(p)
     +'<div class="row2">'+sizeHTML+'</div>'
@@ -431,7 +433,7 @@ function listCardHTML(p){
   return '<div class="card list-card">'
     +'<div class="thumb">'+mediaHTML(p)+'</div>'
     +'<div class="lm">'
-    +'<div class="model">'+p.model+'<span class="badge-mini b-'+p.brand+'">'+p.brand+'</span>'+ageBadgeHTML(p)+(p.feat?'<span class="badge-feat">主推</span>':'')+'</div>'
+    +'<div class="model">'+p.model+'<span class="badge-mini b-'+p.brand+'">'+p.brand+'</span>'+ageBadgeHTML(p)+(p.feat?'<span class="badge-feat">主推</span>':'')+(p.fcat?'<span class="badge-fcat">'+p.fcat+'</span>':'')+'</div>'
     +'<div class="sub">'+prName+' ｜ '+(total>0 ? ('海尔仓 '+fmt(st.haier)+' 台 · 云仓 '+fmt(st.yun)+' 台') : '暂时无货')+'</div>'
     +ageLineHTML(p)
     +'<div class="row2">'+sizeTxt+'</div>'
@@ -480,7 +482,7 @@ function renderFeat(){
     const subLine = sub ? '<div class="fc-sub">'+sub+'</div>' : '';
     return '<div class="feat-card" onclick="state.q=\''+p.model+'\';document.getElementById(\'search\').value=state.q;state.featOnly=false;refreshUI();">'
       +'<div class="fc-img">'+mediaHTML(p)+'</div>'
-      +'<div class="fc-bd"><div class="fc-model">'+title+(p.fcat?'<span class="fc-cat">'+p.fcat+'</span>':'')+'</div>'
+      +'<div class="fc-bd"><div class="fc-model"><span class="fc-name">'+title+'</span>'+(p.fcat?'<span class="fc-cat">'+p.fcat+'</span>':'')+'</div>'
       +'<div class="fc-price">'+(w!=null?yuan(w):'询价')+'<span class="fc-tag">'+tag+'</span></div>'
       +subLine
       +hbLine
