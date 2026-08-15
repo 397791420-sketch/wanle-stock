@@ -164,6 +164,12 @@ input{font:inherit}
     <button data-width="w80_90">宽80-90cm</button>
     <button data-width="w90p">宽90cm以上</button>
   </div>
+  <div class="pills" id="heightPills">
+    <button data-height="all" class="active">全部高度</button>
+    <button data-height="h170_180">高170-180cm</button>
+    <button data-height="h180_190">高180-190cm</button>
+    <button data-height="h190p">高190cm以上</button>
+  </div>
 <div class="pills" id="agePills" style="display:none">
     <button data-age="all" class="active">全部库龄</button>
     <button data-age="jyd">积压 ≥90天</button>
@@ -209,7 +215,7 @@ const ICONS = {
   , '空调': '<svg viewBox="0 0 48 48" fill="none"><rect x="8" y="16" width="32" height="18" rx="3" stroke="currentColor" stroke-width="2.5"/><line x1="14" y1="25" x2="34" y2="25" stroke="currentColor" stroke-width="2.5"/><line x1="16" y1="29" x2="32" y2="29" stroke="currentColor" stroke-width="2"/><path d="M24 6v6M18 9l6 3 6-3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>'
 };
 
-const state = { cat:'all', brand:'all', width:'all', mode:'wholesale', dip:false, q:'', stockOnly:false, view:'list', age:'all', ageSort:false };
+const state = { cat:'all', brand:'all', width:'all', height:'all', mode:'wholesale', dip:false, q:'', stockOnly:false, view:'list', age:'all', ageSort:false };
 
 function num(n){ return (typeof n === 'number' && isFinite(n)) ? n : null; }
 function fmt(n){ return n == null ? '' : Math.round(n).toLocaleString('zh-CN'); }
@@ -253,6 +259,13 @@ function prodWidth(p){
   return m ? parseFloat(m[1]) : null;
 }
 
+function prodHeight(p){
+  const sz = p && p.size;
+  if(!sz) return null;
+  const m = String(sz).match(/(\d+(?:\.\d+)?)\s*[xX*\u00d7]\s*(\d+(?:\.\d+)?)\s*[xX*\u00d7]\s*(\d+(?:\.\d+)?)/);
+  return m ? parseFloat(m[3]) : null;
+}
+
 function filtered(){
   const q = state.q.trim().toLowerCase();
   const list = PRODUCTS.filter(p=>{
@@ -265,6 +278,13 @@ function filtered(){
       if(state.width==='w60_80' && !(w>=600 && w<800)) return false;
       if(state.width==='w80_90' && !(w>=800 && w<900)) return false;
       if(state.width==='w90p' && !(w>=900)) return false;
+    }
+    if(state.height!=='all'){
+      const h = prodHeight(p);
+      if(h==null) return false;
+      if(state.height==='h170_180' && !(h>=1700 && h<1800)) return false;
+      if(state.height==='h180_190' && !(h>=1800 && h<1900)) return false;
+      if(state.height==='h190p' && !(h>=1900)) return false;
     }
     if(state.stockOnly && !(p.stock.total>0)) return false;
     if(state.age!=='all'){
@@ -398,6 +418,7 @@ function refreshUI(){
   document.querySelectorAll('#catPills button').forEach(b=>b.classList.toggle('active', b.dataset.cat===state.cat));
   document.querySelectorAll('#brandPills [data-brand]').forEach(b=>b.classList.toggle('active', b.dataset.brand===state.brand));
   document.querySelectorAll('#widthPills button').forEach(b=>b.classList.toggle('active', b.dataset.width===state.width));
+  document.querySelectorAll('#heightPills button').forEach(b=>b.classList.toggle('active', b.dataset.height===state.height));
   document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.mode===state.mode));
   document.getElementById('onlyStock').classList.toggle('on', state.stockOnly);
   document.querySelectorAll('#agePills [data-age]').forEach(b=>b.classList.toggle('active', b.dataset.age===state.age));
@@ -417,6 +438,10 @@ document.getElementById('brandPills').addEventListener('click', e=>{
 document.getElementById('widthPills').addEventListener('click', e=>{
   const b=e.target.closest('button[data-width]'); if(!b) return;
   state.width=b.dataset.width; refreshUI();
+});
+document.getElementById('heightPills').addEventListener('click', e=>{
+  const b=e.target.closest('button[data-height]'); if(!b) return;
+  state.height=b.dataset.height; refreshUI();
 });
 document.getElementById('onlyStock').addEventListener('click', ()=>{ state.stockOnly=!state.stockOnly; refreshUI(); });
 document.getElementById('agePills').addEventListener('click', e=>{
