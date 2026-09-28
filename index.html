@@ -26,6 +26,9 @@ input{font:inherit}
 .meta{margin-top:12px;font-size:12px;background:rgba(255,255,255,.12);border-radius:10px;padding:7px 10px;display:inline-flex;gap:6px;flex-wrap:wrap}
 .meta .upd-time{background:rgba(255,255,255,.22);border-radius:6px;padding:2px 7px;font-weight:600}
 .meta .upd-time b{color:#ffd54a;font-weight:700}
+.nav-row{display:flex;gap:8px;margin-top:10px}
+.nav-btn{flex:1;text-align:center;text-decoration:none;font-size:13px;padding:8px 6px;border-radius:9px;background:rgba(255,255,255,.14);color:#fff;font-weight:600;display:block}
+.nav-btn.on{background:#fff;color:#0f2b4c}
 
 /* ---------- 工具栏 ---------- */
 .controls{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 12px}
@@ -197,6 +200,7 @@ input{font:inherit}
     </div>
   </div>
   <div class="meta"><span class="upd-time">库存更新时间：<b>2026-09-27 10:00</b></span><span id="statTotal">共 0 款</span><span id="statStock">库存 0 台</span><span id="statAge" style="display:none"></span></div>
+  <div class="nav-row"><span class="nav-btn on">库存价格表</span><a class="nav-btn" href="stock.html">实时库存表</a></div>
 </header>
 
 <section class="prio-wrap" id="prioWrap" style="display:none">
